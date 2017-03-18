@@ -38,6 +38,10 @@
 ;; Delete trailing whitespaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; Append new line
+(setq require-final-newline 'visit-save)
+(setq mode-require-final-newline 'visit-save)
+
 ;; Init solarized
 (load-theme 'solarized-dark t)
 
