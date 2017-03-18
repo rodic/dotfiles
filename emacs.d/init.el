@@ -11,6 +11,8 @@
 (toggle-frame-maximized)
 
 ;; Start multi term in right window
+(defvar multi-term-program)
+(setq multi-term-program "/bin/zsh")
 (multi-term)
 (split-window-right)
 (other-window 0)
