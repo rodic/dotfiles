@@ -4,6 +4,14 @@
 
 (package-initialize)
 
+;; include paths from shell
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PATH'")))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(if window-system (set-exec-path-from-shell-PATH))
+
 ;; Hide startup screen
 (setq inhibit-startup-screen t)
 
@@ -21,7 +29,7 @@
 (menu-bar-mode -1)
 
 ;; Increase font size
-(set-face-attribute 'default (selected-frame) :height 120)
+(set-face-attribute 'default (selected-frame) :height 140)
 
 ;; Show line numbers
 (defvar linum-format)
@@ -43,6 +51,22 @@
 ;; Append new line
 (setq require-final-newline 'visit-save)
 (setq mode-require-final-newline 'visit-save)
+
+;; Delete selected region
+(delete-selection-mode t)
+
+;; Highlight brackets
+(show-paren-mode t)
+
+;; Expand region
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;; Init multiple cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;; Init solarized
 (load-theme 'solarized-dark t)
