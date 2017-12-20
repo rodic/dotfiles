@@ -68,6 +68,22 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
+;; Cut line or region
+(defun cut-line-or-region()
+  (interactive)
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end))
+    (kill-region (line-beginning-position) (line-beginning-position 2))))
+
+(global-set-key [remap kill-region] 'cut-line-or-region)
+
+;; Copy line or region
+(defun copy-line-or-region()
+  (interactive)
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (kill-ring-save (line-beginning-position) (line-beginning-position 2))))
+
 ;; Init solarized
 (load-theme 'solarized-dark t)
 
