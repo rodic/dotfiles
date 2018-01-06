@@ -1,16 +1,10 @@
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; Cask
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
 
-(package-initialize)
-
-;; include paths from shell
-(defun set-exec-path-from-shell-PATH ()
-  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PATH'")))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(if window-system (set-exec-path-from-shell-PATH))
+;; Exec path from shell
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;; Hide startup screen
 (setq inhibit-startup-screen t)
@@ -52,22 +46,6 @@
 (setq require-final-newline 'visit-save)
 (setq mode-require-final-newline 'visit-save)
 
-;; Delete selected region
-(delete-selection-mode t)
-
-;; Highlight brackets
-(show-paren-mode t)
-
-;; Expand region
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
-
-;; Init multiple cursors
-(require 'multiple-cursors)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
 ;; Cut line or region
 (defun cut-line-or-region()
   (interactive)
@@ -84,11 +62,51 @@
       (kill-ring-save (region-beginning) (region-end))
     (kill-ring-save (line-beginning-position) (line-beginning-position 2))))
 
-;; Init solarized
-(load-theme 'solarized-dark t)
+;; Delete selected region
+(delete-selection-mode t)
 
-;; Init projectile
+;; Drag stuff
+(require 'drag-stuff)
+(drag-stuff-global-mode 1)
+(drag-stuff-define-keys)
+
+;; Expand region
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;; Flycheck
+(global-flycheck-mode)
+(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+
+;; Ido mode
+(ido-mode t)
+
+;; Multiple cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+;; Projectile
 (projectile-mode)
+
+;; Helm projectile
+(require 'helm-projectile)
+(helm-projectile-on)
+
+;; Smart parens
+(require 'smartparens-config)
+(smartparens-mode t)
+(show-smartparens-mode t)
+(add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
+(add-hook 'tide-mode-hook 'smartparens-mode)
+
+;; Smex
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+;; Solarized theme
+(load-theme 'solarized-dark t)
 
 ;; Setup tide
 (defvar flycheck-check-syntax-automatically)
@@ -107,12 +125,21 @@
 (add-hook 'before-save-hook 'tide-format-before-save)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
-;; Init rainbow
-(rainbow-mode)
+;; Highlight brackets
+(show-paren-mode t)
 
-;; Flycheck
-(global-flycheck-mode)
-(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+;; Web mode
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(defun setup-web-mode ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'setup-web-mode)
 
 ;; Backups
 (setq backup-by-copying t)

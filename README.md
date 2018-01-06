@@ -1,18 +1,32 @@
 # Configuration files
 
 ## Emacs
+- Use [Cask](https://github.com/cask/cask) to manage dependencies
+- [exec-path-from-shell](https://github.com/purcell/exec-path-from-shell)
 - Hide startup screen
 - Start in max size
-- Start [multi term](https://www.emacswiki.org/emacs/MultiTerm) (running zsh) in right window
+- Start [multi-term](https://www.emacswiki.org/emacs/MultiTerm) (running zsh) in right window
 - Hide menu bar
 - Increase font size
 - Show line numbers
 - Show column numbers
 - Setup indentation
 - Delete trailing whitespaces
-- Init [solarized dark](https://github.com/sellout/emacs-color-theme-solarized) theme
-- Init [projectile](http://batsov.com/projectile/)
-- Setup [tide](https://github.com/ananthakumaran/tide)
-- Init [rainbow mode](https://github.com/emacsmirror/rainbow-mode)
+- Append new line
+- Highlight matching brackets
+- cut-line-or-region custom function
+- copy-line-or-region custom function
+- Init [delete-selection-mode](https://www.emacswiki.org/emacs/DeleteSelectionMode)
+- Init [drag-stuff](https://github.com/rejeep/drag-stuff.el)
+- Init [expand-region](https://github.com/magnars/expand-region.el)
 - Init [flycheck](https://github.com/flycheck/flycheck)
+- Init [ido-mode](https://www.emacswiki.org/emacs/InteractivelyDoThings)
+- Init [multiple-cursors](https://github.com/magnars/multiple-cursors.el)
+- Init [projectile](http://batsov.com/projectile/)
+- Init [helm-projectile](https://github.com/bbatsov/helm-projectile)
+- Init [smartparens](https://github.com/Fuco1/smartparens)
+- Init [smex](https://github.com/nonsequitur/smex)
+- Init [solarized-dark](https://github.com/sellout/emacs-color-theme-solarized) theme
+- Init [tide](https://github.com/ananthakumaran/tide)
+- Init [web-mode](http://web-mode.org/)
 - Config backups
