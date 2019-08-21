@@ -1,6 +1,7 @@
-;; Cask
-(require 'cask "~/.cask/cask.el")
-(cask-initialize)
+(require 'package)
+(add-to-list 'package-archives
+         '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
 
 ;; Exec path from shell
 (when (memq window-system '(mac ns x))
@@ -11,13 +12,6 @@
 
 ;; Start in max size
 (toggle-frame-maximized)
-
-;; Start multi term in right window
-(defvar multi-term-program)
-(setq multi-term-program "/bin/zsh")
-(multi-term)
-(split-window-right)
-(other-window 0)
 
 ;; Hide menu bar
 (menu-bar-mode -1)
@@ -39,47 +33,50 @@
 (setq js-indent-level 2)
 (setq typescript-indent-level 2)
 
+;; Multiterm
+(defvar multi-term-program)
+(setq multi-term-program "/bin/zsh")
+
+;; Ivy
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+;; enable this if you want `swiper' to use it
+;; (setq search-default-mode #'char-fold-to-regexp)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c ss") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
 ;; Delete trailing whitespaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Drag stuff
+(drag-stuff-mode t)
+(drag-stuff-define-keys)
 
 ;; Append new line
 (setq require-final-newline 'visit-save)
 (setq mode-require-final-newline 'visit-save)
 
-;; Cut line or region
-(defun cut-line-or-region()
-  (interactive)
-  (if (region-active-p)
-      (kill-region (region-beginning) (region-end))
-    (kill-region (line-beginning-position) (line-beginning-position 2))))
-
-(global-set-key [remap kill-region] 'cut-line-or-region)
-
-;; Copy line or region
-(defun copy-line-or-region()
-  (interactive)
-  (if (region-active-p)
-      (kill-ring-save (region-beginning) (region-end))
-    (kill-ring-save (line-beginning-position) (line-beginning-position 2))))
-
 ;; Delete selected region
 (delete-selection-mode t)
-
-;; Drag stuff
-(require 'drag-stuff)
-(drag-stuff-global-mode 1)
-(drag-stuff-define-keys)
-
-;; Expand region
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; Flycheck
 (global-flycheck-mode)
 (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-
-;; Ido mode
-(ido-mode t)
 
 ;; Multiple cursors
 (require 'multiple-cursors)
@@ -88,11 +85,9 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;; Projectile
-(projectile-mode)
-
-;; Helm projectile
-(require 'helm-projectile)
-(helm-projectile-on)
+(projectile-mode +1)
+(counsel-projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 ;; Smart parens
 (require 'smartparens-config)
@@ -101,29 +96,8 @@
 (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
 (add-hook 'tide-mode-hook 'smartparens-mode)
 
-;; Smex
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-
-;; Solarized theme
-(load-theme 'solarized-dark t)
-
-;; Setup tide
-(defvar flycheck-check-syntax-automatically)
-(defvar company-tooltip-align-annotations)
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-
-(setq company-tooltip-align-annotations t)
-
-(add-hook 'before-save-hook 'tide-format-before-save)
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; Theme
+(load-theme 'brin t)
 
 ;; Highlight brackets
 (show-paren-mode t)
